@@ -5,11 +5,6 @@ jobs:
       - image: nginx:latest
     steps:
       - checkout
-      - run: 
-          name: Build-repo
-          command: |
-            ls     
-            nano index.html
   Test:
     docker:
       - image: circleci/node:latest
