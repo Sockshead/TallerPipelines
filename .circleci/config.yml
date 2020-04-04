@@ -1,16 +1,15 @@
 version: 2.1
 jobs:
   Build:
-    docker:
-      - image: ubuntu:latest
+    machine:
+      image: ubuntu-1604:201903-01
     steps:
       - checkout
       - run: 
           name: Build-repo
           command: |
-            apt-get update && apt-get upgrade -y
-            apt-get install nginx -y
-            cd ~
+            sudo apt-get update && apt-get upgrade -y
+            sudo apt-get install nginx -y
             ls
             
   Test:
