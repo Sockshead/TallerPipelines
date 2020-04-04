@@ -1,22 +1,14 @@
 version: 2.1
 jobs:
-  Hello-World:
+  Build:
     docker:
       - image: alpine:3.7
     steps:
       - run:
-          name: Hello World
+          name: Build-repo
           command: |
             echo 'This is the delivery pipeline'
-  I-Have-Code:
-    docker:
-      - image: alpine:3.7
-    steps:
-      - checkout
-      - run:
-          name: Code Has Arrived
-          command: |
-            ls -al
+            ls -al           
   Run-With-Node:
     docker:
       - image: circleci/node:10-browsers
@@ -33,23 +25,19 @@ jobs:
           name: Approval Complete
           command: |
             echo 'Do work once the approval has completed'
-
 workflows:
  version: 2
  Example_Workflow:
    jobs:
-     - Hello-World
-     - I-Have-Code:
-         requires:
-           - Hello-World
+     - Build-repo
      - Run-With-Node:
          requires:
-           - Hello-World
+           - Build-repo
      - Hold-For-Approval:
          type: approval
          requires:
+           - Build-repo
            - Run-With-Node
-           - I-Have-Code
      - Now-Complete:
          requires:
            - Hold-For-Approval
