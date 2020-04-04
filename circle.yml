@@ -1,9 +1,0 @@
-test:  
-  override:
-    - "true"
-    
-deployment:
-  production:
-    branch: master
-    commands:
-      - scp -r * https://sockshead.github.io/TallerPipelines/
