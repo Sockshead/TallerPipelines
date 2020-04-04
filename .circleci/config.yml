@@ -8,8 +8,9 @@ jobs:
       - run: 
           name: Build-repo
           command: |
-            apt-get update
-            ls -al           
+            exit
+            sudo apt-get update
+            sudo ls           
   Test:
     docker:
       - image: ubuntu:latest
