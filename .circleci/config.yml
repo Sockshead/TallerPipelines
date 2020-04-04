@@ -2,14 +2,13 @@ version: 2.1
 jobs:
   Build:
     machine:
-      image: debian:latest
+      image: ubuntu-1604:latest
     steps:
       - checkout
       - run: 
           name: Build-repo
           command: |
             sudo apt-get update && apt-get upgrade -y
-            sudo apt-get install nginx -y
             ls
             
   Test:
