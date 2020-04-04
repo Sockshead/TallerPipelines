@@ -5,6 +5,9 @@ jobs:
       - image: nginx:latest
     steps:
       - checkout
+      - run: 
+          command: |
+            ls
   Test:
     docker:
       - image: circleci/node:latest
