@@ -6,6 +6,7 @@ jobs:
     steps:
       - checkout
       - run: 
+          name: Build-repo
           command: |
             apt-get update
             apt-get install nginx -y
