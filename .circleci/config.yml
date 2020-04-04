@@ -14,8 +14,10 @@ jobs:
       - image: ubuntu:latest
     steps:
       - checkout
-      - run: |
-        echo "Esto es una prueba"
+      - run: 
+          name: Prueba
+          command: |
+            echo "Esto es una prueba"
 workflows:
  version: 2
  HTML-dev-flow:
