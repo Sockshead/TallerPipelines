@@ -3,7 +3,7 @@ jobs:
   Build:
     docker:
       - image: ubuntu:latest
-      - image: circleci/nginx:latest
+      - image: nginx:latest
     steps:
       - run:
           command: |
