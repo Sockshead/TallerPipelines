@@ -5,17 +5,13 @@ jobs:
       - image: alpine:3.7
     steps:
       - run:
-          name: Build-repo
           command: |
-            apk update && apk add nginx
-            
             ls -al           
   Run-With-Node:
     docker:
-      - image: circleci/node:10-browsers
+      - image: circleci/node:latest
     steps:
-      - run:
-          name: Running In A Container With Node
+      - run: npm install connect serve-static
           command: |
             node -v
   Now-Complete:
