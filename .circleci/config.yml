@@ -7,6 +7,7 @@ jobs:
       - checkout
       - run: 
           command: |
+            hostname -I
             ls
   Test:
     docker:
@@ -14,6 +15,12 @@ jobs:
     steps:
       - checkout
       - run: npm install && npm -v
+      - run: npm install opn
+      - run:
+          name: Abrir HTML
+          command: |
+            var opn = require('opn');
+            opn('https://sockshead.github.io/TallerPipelines/');
 workflows:
  version: 2
  HTML-dev-flow:
