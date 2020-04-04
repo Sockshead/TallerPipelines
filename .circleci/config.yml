@@ -29,14 +29,14 @@ workflows:
  version: 2
  Example_Workflow:
    jobs:
-     - Build-repo
+     - Build
      - Run-With-Node:
          requires:
-           - Build-repo
+           - Build
      - Hold-For-Approval:
          type: approval
          requires:
-           - Build-repo
+           - Build
            - Run-With-Node
      - Now-Complete:
          requires:
