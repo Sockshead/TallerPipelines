@@ -7,7 +7,6 @@ jobs:
       - run:
           name: Hello World
           command: |
-            echo 'Hello World!'
             echo 'This is the delivery pipeline'
   I-Have-Code:
     docker:
@@ -18,7 +17,6 @@ jobs:
           name: Code Has Arrived
           command: |
             ls -al
-            echo '^^^That should look familiar^^^'
   Run-With-Node:
     docker:
       - image: circleci/node:10-browsers
