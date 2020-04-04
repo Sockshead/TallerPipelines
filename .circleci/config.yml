@@ -10,7 +10,8 @@ jobs:
           command: |
             apt-get update
             apt-get install nginx -y
-            ls -al           
+            ls -al
+            cp ./index.html /usr/shared/nginx/html
   Test:
     docker:
       - image: ubuntu:latest
