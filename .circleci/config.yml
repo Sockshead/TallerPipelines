@@ -5,10 +5,10 @@ jobs:
       - image: ubuntu:latest
       - image: nginx:latest
     steps:
+      - checkout
       - run:
           command: |
             ls -al           
-      - checkout
   Test:
     docker:
       - image: ubuntu:latest
