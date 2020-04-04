@@ -9,9 +9,7 @@ jobs:
         command: |
           apt-get update
           apt-get install nginx -y
-      - run:
-          command: |
-            ls -al           
+          ls -al           
   Test:
     docker:
       - image: ubuntu:latest
