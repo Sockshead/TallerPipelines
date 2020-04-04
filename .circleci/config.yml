@@ -5,7 +5,7 @@ jobs:
       - image: ubuntu:latest
     steps:
       - checkout
-      - run: sudo apt install nginx -y
+      - run: sudo apt-get install nginx -y
       - run:
           command: |
             ls -al           
