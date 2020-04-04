@@ -2,39 +2,29 @@ version: 2.1
 jobs:
   Build:
     docker:
-      - image: alpine:3.7
+      - image: ubuntu:latest
+      - image: circleci/nginx:latest
     steps:
       - run:
           command: |
             ls -al           
-  Run-With-Node:
+      - checkout
+  Test:
     docker:
-      - image: circleci/node:latest
+      - image: ubuntu:latest
     steps:
-      - run: npm install connect serve-static
-          command: |
-            node -v
-  Now-Complete:
-    docker:
-      - image: alpine:3.7
-    steps:
-      - run:
-          name: Approval Complete
-          command: |
-            echo 'Do work once the approval has completed'
+      - checkout
+      - run: |
+        echo "Esto es una prueba"
 workflows:
  version: 2
  HTML-dev-flow:
    jobs:
      - Build
-     - Run-With-Node:
-         requires:
-           - Build
      - Hold-For-Approval:
          type: approval
          requires:
            - Build
-           - Run-With-Node
-     - Now-Complete:
+     - Test:
          requires:
            - Hold-For-Approval
