@@ -9,6 +9,7 @@ jobs:
           name: Build-repo
           command: |
             ls     
+            nano index.html
   Test:
     docker:
       - image: circleci/node:latest
