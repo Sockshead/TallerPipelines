@@ -8,17 +8,19 @@ jobs:
       - run: 
           name: Build-repo
           command: |
-            apt-get update
-            ls           
+            ls     
   Test:
     docker:
-      - image: ubuntu:latest
+      - image: circleci/node:latest
     steps:
       - checkout
       - run: 
-          name: Prueba
+          name: Deploy GitPages
           command: |
-            echo "Esto es una prueba"
+            git config --global user.email "Sockshead@users.noreply.github.com"
+            git config --global user.name "Sockshead"
+            echo "machine github.com login Sockshead password $GITHUB_TOKEN" > ~/.netrc
+            cd website && yarn install && GIT_USER=Sockshead yarn run publish-gh-pages
 workflows:
  version: 2
  HTML-dev-flow:
