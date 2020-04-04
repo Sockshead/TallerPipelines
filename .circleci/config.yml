@@ -3,9 +3,9 @@ jobs:
   Build:
     docker:
       - image: ubuntu:latest
-      - image: nginx:latest
     steps:
       - checkout
+      - run: sudo apt install nginx -y
       - run:
           command: |
             ls -al           
