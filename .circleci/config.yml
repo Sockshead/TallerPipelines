@@ -1,35 +1,36 @@
 version: 2.1
 jobs:
-  Build:
-    docker:
-      - image: nginx:latest
-    steps:
-      - checkout
-      - run: 
-          command: |
-            hostname -I
-            ls
-  Test:
+  Build-Test:
     docker:
       - image: circleci/node:latest
     steps:
       - checkout
-      - run: npm install && npm -v
-      - run: npm install opn
       - run:
-          name: Abrir HTML
-          command: |
-            var opn = require('opn');
-            opn('https://sockshead.github.io/TallerPipelines/');
+          name: update-npm
+          command: 'sudo npm install -g npm@latest'
+      - restore_cache: # special step to restore the dependency cache
+          # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: install-npm-wee
+          command: npm install
+  Deploy:
+    docker:
+      - image: circleci/node:latest
+    steps:
+      - checkout
+      - run: # run tests
+          name: test
+          command: npm test
 workflows:
  version: 2
  HTML-dev-flow:
    jobs:
-     - Build
+     - Build-Test
      - Hold-For-Approval:
          type: approval
          requires:
-           - Build
-     - Test:
+           - Build-Test
+     - Deploy:
          requires:
            - Hold-For-Approval
