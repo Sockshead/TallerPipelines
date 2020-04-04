@@ -8,8 +8,8 @@ jobs:
       - run: 
           name: Build-repo
           command: |
-            sudo apt-get update
-            ls
+            sudo apt-get install nginx
+            sudo ls
             
   Test:
     docker:
