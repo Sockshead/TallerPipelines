@@ -53,8 +53,12 @@ workflows:
       - Test:
           requires:
             - Build
+      - Request-Deploy:
+          type: approval
+          requires:
+            - Test
       - DeployDevelopment:
-        type: approval
           requires:
             - Build
             - Test
+            - Request-Deploy
