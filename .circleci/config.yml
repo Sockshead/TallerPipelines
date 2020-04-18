@@ -74,11 +74,11 @@ workflows:
       - Build
       - Test:
           requires:
-            - build
+            - Build
       - DeployDevelopment:
           requires:
-            - build
-            - test
+            - Build
+            - Test
       - Request-Testing:
           type: approval
           requires:
@@ -86,4 +86,4 @@ workflows:
             - DeployDevelopment
       - RunDeploy:
           requires:
-            - request-testing
+            - Request-testing
