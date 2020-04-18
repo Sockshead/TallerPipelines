@@ -1,36 +1,89 @@
-version: 2.1
+version: 2
 jobs:
-  Build-Test:
+  Build:
     docker:
       - image: circleci/node:latest
+    working_directory: ~/repo
     steps:
       - checkout
-      - run:
-          name: update-npm
-          command: 'sudo npm install -g npm@latest'
-      - restore_cache: # special step to restore the dependency cache
-          # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
-          key: dependency-cache-{{ checksum "package-lock.json" }}
-      - run:
-          name: install-npm-wee
-          command: npm install
-  Deploy:
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run: yarn install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+  Test:
     docker:
       - image: circleci/node:latest
+    working_directory: ~/repo
     steps:
       - checkout
-      - run: # run tests
-          name: test
-          command: npm test
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run: yarn run test
+  DeployDevelopment:
+    docker:
+      - image: circleci/node:latest
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - add_ssh_keys:
+          fingerprints:
+            - "6a:3e:6c:f9:bd:a6:3f:fd:05:c0:29:e1:5e:8d:ae:a0"
+      - run: yarn run build
+      - run: scp -o StrictHostKeyChecking=no -r ./build/* ubuntu@18.232.140.254:/var/www/html
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+  RunDeploy:
+    docker:
+      - image: circleci/node:latest
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - add_ssh_keys:
+          fingerprints:
+            - "6a:3e:6c:f9:bd:a6:3f:fd:05:c0:29:e1:5e:8d:ae:a0"
+      - run: yarn run build
+      - run: scp -o StrictHostKeyChecking=no -r ./build/* ubuntu@ec2-54-210-184-186.compute-1.amazonaws.com:/mnt/sharedfolder
+      - run: ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-221-48-142.compute-1.amazonaws.com 'sudo service apache2 restart'
+      - run: ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-166-129-133.compute-1.amazonaws.com 'sudo service apache2 restart'
+      - run: ssh -o StrictHostKeyChecking=no ubuntu@ec2-107-20-75-224.compute-1.amazonaws.com 'sudo service nginx restart'
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
 workflows:
- version: 2
- HTML-dev-flow:
-   jobs:
-     - Build-Test
-     - Hold-For-Approval:
-         type: approval
-         requires:
-           - Build-Test
-     - Deploy:
-         requires:
-           - Hold-For-Approval
+  version: 2
+  HTML-Dev-Flow:
+    jobs:
+      - Build
+      - Test:
+          requires:
+            - build
+      - DeployDevelopment:
+          requires:
+            - build
+            - test
+      - Request-Testing:
+          type: approval
+          requires:
+            - Test
+            - DeployDevelopment
+      - RunDeploy:
+          requires:
+            - request-testing
