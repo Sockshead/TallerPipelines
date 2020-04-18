@@ -86,4 +86,4 @@ workflows:
             - DeployDevelopment
       - RunDeploy:
           requires:
-            - Request-testing
+            - Request-Testing
