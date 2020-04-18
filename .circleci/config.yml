@@ -38,31 +38,9 @@ jobs:
             - v1-dependencies-
       - add_ssh_keys:
           fingerprints:
-            - "6a:3e:6c:f9:bd:a6:3f:fd:05:c0:29:e1:5e:8d:ae:a0"
+            - "3f:4a:2f:31:59:94:c2:4d:b5:da:43:d6:4a:0d:3b:65"
       - run: yarn run build
-      - run: scp -o StrictHostKeyChecking=no -r ./build/* ubuntu@18.232.140.254:/var/www/html
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-  RunDeploy:
-    docker:
-      - image: circleci/node:latest
-    working_directory: ~/repo
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
-      - add_ssh_keys:
-          fingerprints:
-            - "6a:3e:6c:f9:bd:a6:3f:fd:05:c0:29:e1:5e:8d:ae:a0"
-      - run: yarn run build
-      - run: scp -o StrictHostKeyChecking=no -r ./build/* ubuntu@ec2-54-210-184-186.compute-1.amazonaws.com:/mnt/sharedfolder
-      - run: ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-221-48-142.compute-1.amazonaws.com 'sudo service apache2 restart'
-      - run: ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-166-129-133.compute-1.amazonaws.com 'sudo service apache2 restart'
-      - run: ssh -o StrictHostKeyChecking=no ubuntu@ec2-107-20-75-224.compute-1.amazonaws.com 'sudo service nginx restart'
+      - run: scp -o StrictHostKeyChecking=no -r ./build/* ubuntu@34.238.51.29:/var/www/html
       - save_cache:
           paths:
             - node_modules
@@ -76,14 +54,7 @@ workflows:
           requires:
             - Build
       - DeployDevelopment:
+        type: approval
           requires:
             - Build
             - Test
-      - Request-Testing:
-          type: approval
-          requires:
-            - Test
-            - DeployDevelopment
-      - RunDeploy:
-          requires:
-            - Request-Testing
